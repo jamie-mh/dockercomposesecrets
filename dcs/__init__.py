@@ -2,6 +2,7 @@ import os
 
 from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.utils import import_string
 
 from dcs.models import BaseModel
 
@@ -23,9 +24,12 @@ def create_app():
     app = Flask(__name__, static_url_path="/")
 
     if os.environ["FLASK_ENV"] == "development":
-        app.config.from_object("dcs.config.development.DevelopmentConfig")
+        config_cls = "dcs.config.development.DevelopmentConfig"
     else:
-        app.config.from_object("dcs.config.production.ProductionConfig")
+        config_cls = "dcs.config.production.ProductionConfig"
+
+    config = import_string(config_cls)()
+    app.config.from_object(config)
 
     db.init_app(app)
 
