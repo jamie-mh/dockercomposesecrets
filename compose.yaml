@@ -1,0 +1,48 @@
+services:
+  app:
+    image: ghcr.io/jamie-mh/dockercomposesecrets:latest
+    container_name: dcs-app
+    restart: always
+    ports:
+      - "8003:8000"
+    networks:
+      - dcs
+    depends_on:
+      - postgres
+    environment:
+      - FLASK_ENV=production
+    secrets:
+      - flask_secret_key
+      - recaptcha_private_key
+      - database_password
+      
+  postgres:
+    image: postgres:17-alpine
+    container_name: dcs-postgres
+    restart: always
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - dcs
+    environment:
+      - POSTGRES_USER=dcs
+      - POSTGRES_DB=dcs
+      - POSTGRES_DB_FILE=/run/secrets/database_password
+    secrets:
+      - database_password
+
+secrets:
+  flask_secret_key:
+    environment: FLASK_SECRET_KEY
+  recaptcha_private_key:
+    environment: RECAPTCHA_PRIVATE_KEY
+  database_password:
+    environment: DATABASE_PASSWORD
+    
+networks:
+  dcs:
+    driver: bridge
+
+volumes:
+  db-data:
+    driver: local

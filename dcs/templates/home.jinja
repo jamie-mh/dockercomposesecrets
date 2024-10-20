@@ -1,0 +1,48 @@
+{% extends "base.jinja" %}
+
+{% block content %}
+    <h1>{% block title %}Comments{% endblock %}</h1>
+    
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+    
+    <form id="comment-form" action="/" method="post">
+        {% for errors in form.errors.values() %}
+            {% for error in errors %}
+                <strong>{{ error }}</strong>
+            {% endfor %}
+        {% endfor %}
+    
+        {{ form.csrf_token }}
+        
+        <div class="field">
+            <label for="name">Name</label>
+            {{ form.name }}
+        </div>
+       
+        <div class="field">
+            <label for="content">Comment</label>
+            {{ form.content }}
+        </div>
+        
+        {{ form.captcha }}
+        <button type="submit">Submit</button>
+    </form>
+
+    <div id="comment-list">
+        {% for comment in comments %}
+            <div class="comment">
+                <span class="name">{{ comment.name|e }}</span>
+                <p class="content">{{ comment.content|e }}</p>
+                <small class="created-at">{{ comment.created_at.strftime("%B %-d, %Y at %H:%M") }}</small>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

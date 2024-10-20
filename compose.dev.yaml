@@ -1,0 +1,10 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: dcs-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=dcs
+      - POSTGRES_DB=dcs
+      - POSTGRES_PASSWORD=dcs
