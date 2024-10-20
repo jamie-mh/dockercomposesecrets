@@ -27,7 +27,7 @@ services:
     environment:
       - POSTGRES_USER=dcs
       - POSTGRES_DB=dcs
-      - POSTGRES_DB_FILE=/run/secrets/database_password
+      - POSTGRES_PASSWORD_FILE=/run/secrets/database_password
     secrets:
       - database_password
 
